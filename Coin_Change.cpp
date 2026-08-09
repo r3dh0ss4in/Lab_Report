@@ -13,54 +13,42 @@ using namespace std;
 #define bug2(a, b) cout << #a << " : " << a << "   " << #b << " : " << b << endl;
 #define p_arr(a) cout << a << " ";
 
-void f(int n,int amount,vi coins) {
+void f(int n, int amount, vi coins) {
     int dp[n+1][amount+1];
-    dp[0][0]=0;
-    for(int i=1; i<=n; i++) {
-        dp[i][0]=0;
+    for(int i=0; i<=n; i++) {
+        for(int j=0; j<=amount; j++) {
+            dp[i][j]=INT_MAX;
+        }
     }
-    for(int i=1; i<=amount; i++) {
+    for(int i=0; i<=amount; i++) {
         dp[0][i]=INT_MAX;
+    }
+    for(int i=0; i<=n; i++) {
+        dp[i][0]=0;
     }
     for(int i=1; i<=n; i++) {
         for(int j=1; j<=amount; j++) {
-            if(j>=coins[i-1]) dp[i][j]=min(dp[i-1][j],1+dp[i][j-coins[i-1]]);
-            else dp[i][j]=dp[i-1][j];
+            if(j>=coins[i-1]&&dp[i][j-coins[i-1]]!=INT_MAX) {
+                dp[i][j]=min(dp[i-1][j],1+dp[i][j-coins[i-1]]);
+            } else dp[i][j]=dp[i-1][j];
         }
     }
-    cout << "Min Coins" << endl;
-    cout << dp[n][amount];
-    cout << "Items : " << endl;
-    int i=n;
-    int j=amount;
-    while(j>0&&i>0) {
-        if(dp[i][j]==dp[i-1][j]) i--;
-        else {
-            cout << coins[i-1] << " ";
-            j-=coins[i-1];
-        }
-    }
+    if(dp[n][amount]!=INT_MAX) cout << dp[n][amount];
+    else cout << -1;
+    cout << endl;
 }
 
 void solve() {
-    int n, amount; cin >> n >> amount;
-    vi c(n);
-    for(int &i : c) {
+    int n,x; cin >> n >> x;
+    vi coins(n);
+    for(int &i : coins) {
         cin >> i;
     }
-    f(n,amount,c);
+    f(n,x,coins);
 }
 
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     solve();
-    // int t; cin >> t;
-    // int tc=1;
-    // while(t--) {
-    //     // cout << "tc #" << tc++ << " ";
-    //     // cout << endl;
-    //     solve();
-    //     cout << endl;
-    // }
 }
