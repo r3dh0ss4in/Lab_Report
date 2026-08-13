@@ -13,45 +13,41 @@ using namespace std;
 #define bug2(a, b) cout << #a << " : " << a << "   " << #b << " : " << b << endl;
 #define p_arr(a) cout << a << " ";
 
-void f(int n,int amount,vi coins) {
-    int dp[n+1][amount+1];
-    for(int i=0; i<=n; i++) {
+int const MOD=1000000007;
+
+void f(int n, int amount, vi coins) {
+    vector<vi> dp(n+1, vi (amount+1,0));
+    for(int i=0; i<n; i++) {
         dp[i][0]=1;
     }
-    for(int i=1; i<=amount; i++) {
-        dp[0][i]=0;
-    }
-    for(int i=1; i<=n; i++) {
+    for(int i=n-1; i>=0; i--) {
         for(int j=1; j<=amount; j++) {
-            if(j>=coins[i-1]) {
-                dp[i][j]=dp[i-1][j]+dp[i][j-coins[i-1]];
-            } else {
-                dp[i][j]=dp[i-1][j];
-            }
+            int skip=dp[i+1][j];
+            int take=0;
+            if(coins[i]<=j) take=dp[i][j-coins[i]];
+            dp[i][j]=(skip+take)%MOD;
         }
     }
-    cout << dp[n][amount];
+    // for(int i=0; i<=n; i++) {
+    //     for(int j=0; j<=amount; j++) {
+    //         p_arr(dp[i][j])
+    //     }
+    //     cout << endl;
+    // }
+    cout << dp[0][amount];
 }
 
 void solve() {
-    int n,amount; cin >> n >> amount;
-    vi c(n);
-    for(int &i : c) {
+    int n,x; cin >> n >> x;
+    vi coins(n);
+    for(int &i : coins) {
         cin >> i;
     }
-    f(n,amount,c);
+    f(n,x,coins);
 }
 
 int main() {
     ios_base::sync_with_stdio(0);
     cin.tie(0);
     solve();
-    // int t; cin >> t;
-    // int tc=1;
-    // while(t--) {
-    //     // cout << "Case " << tc++ << ":";
-    //     // cout << endl;
-    //     solve();
-    //     cout << endl;
-    // }
 }
